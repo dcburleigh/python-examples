@@ -1,0 +1,33 @@
+version: 1
+log_root: '|'
+formatters:
+  cons:
+    format: '%(name)s,  %(levelname)s - %(message)s'
+  file:
+    (): utils.logger.MyFormatter
+  err:
+    (): utils.logger.JsonFormatter
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: cons
+    stream: ext://sys.stdout
+  file:
+    class: logging.FileHandler
+    level: DEBUG
+    formatter: file
+    filename: 'test.log'
+  err:
+    class: logging.FileHandler
+    level: WARN
+    formatter: err
+    filename: 'err.log'
+loggers:
+  '|':
+    level: DEBUG
+    handlers: [console,file, err]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [console,file]
