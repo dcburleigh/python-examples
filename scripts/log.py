@@ -1,6 +1,7 @@
 import sys
 import re
 from utils import logger
+from sample import sample
 
 def main():
     ltype = 'basic'
@@ -32,6 +33,9 @@ def main():
     log.warn("we might have a problem")
 
     log.error("something bad")
+
+    sample.func1()
+    
     return 0
 
 if __name__ == '__main__':
