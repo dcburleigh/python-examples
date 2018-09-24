@@ -6,9 +6,9 @@ REPO = $(REPOROOT)/python-examples
 
 FILES = makefile
 
-CONFIGFILES = ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml 
+CONFIGFILES = ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml email.example.ini
 
-SCRIPTS = log.py
+SCRIPTS = log.py mail.py
 
 UTILS = logger.py
 
@@ -33,6 +33,14 @@ install-utils:  utils
 	rsync -a $(REPO)/utils/ utils/
 
 install: install-utils $(FILES) install-sample
+
+email1: install email.ini mail.py
+	python mail.py
+
+email2: install email.ini mail.py
+	python mail.py  $(EMAIL)  "testing2"
+
+
 
 log-basic: install log.py
 	python log.py basic
