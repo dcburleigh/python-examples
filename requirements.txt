@@ -1,2 +1,4 @@
 ruamel.yaml==0.15.42
-email
+#xxx standard lib email
+pymysql
+# config?
