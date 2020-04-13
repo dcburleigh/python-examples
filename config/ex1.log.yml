@@ -16,7 +16,6 @@ handlers:
     level: DEBUG
     formatter: file
     filename: 'test.log'
-    #filename: 'gp.log'
     mode: 'w'
 loggers:
   '|':
@@ -25,4 +24,4 @@ loggers:
     propagate: no
 root:
   level: DEBUG
-  handlers: [console,file]
+  #handlers: [console,file]

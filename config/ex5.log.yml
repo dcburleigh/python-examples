@@ -31,6 +31,3 @@ loggers:
     level: DEBUG
     handlers: [console,file, err]
     propagate: no
-root:
-  level: DEBUG
-  handlers: [console,file]

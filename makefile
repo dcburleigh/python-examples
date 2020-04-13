@@ -9,19 +9,31 @@ FILES = makefile requirements.txt
 
 CONFIGFILES = ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml email.example.ini
 
-ETCFILES = deldev_db.cfg
+ETCFILES = deldev_db.cfg deldev_db_creds.py
 
-SCRIPTS = log.py mail.py base.py db.py
+SCRIPTS = post.py log.py list.py log1.py mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
 
 UTILS = logger.py
 
-DIRS = utils sample
+DIRS = templates data db_tables sample utils
+
+$(DIRS): %: $(REPO)/%
+	rsync -av $(REPO)/$@/ $@/
+
+util-files:
+	rsync -av $(REPO)/utils/ utils/
+
+ITARGETS = $(patsubst %,install-%,$(DIRS))
+
+install-all: $(ITARGETS)
+
+$(ITARGETS): install-%: %
+	rsync -av $(REPO)/$</ $</
+
 
 $(ETCFILES): %: $(ETC)/%
 	cp $< $@
 
-$(DIRS):
-	mkdir -p $@
 
 $(SCRIPTS): %: $(REPO)/scripts/%
 	cp $< $@
@@ -35,13 +47,7 @@ $(FILES): %: $(REPO)/%
 install-common: requirements.txt
 	pip install -r requirements.txt
 
-install-sample:  sample
-	rsync -a $(REPO)/sample/ sample/
-
-install-utils:  utils
-	rsync -a $(REPO)/utils/ utils/
-
-install: install-utils $(FILES) install-sample
+install: util-files $(FILES) sample
 
 email1: install email.ini mail.py
 	python mail.py
@@ -57,6 +63,23 @@ db1: install ex1.log.yml db.py deldev_db.cfg
 	python db.py
 	ls -l test.log
 
+db2: install dbsa.py deldev_db_creds.py install-db_tables
+	python dbsa.py
+
+re1: install regex.py
+	python regex.py
+
+j1: install j.py
+	python j.py
+
+j2: install jw.py templates
+	python jw.py
+
+f1: install file.py data
+	python file.py
+
+dt1: install dt.py
+	python dt.py
 
 log-basic: install log.py
 	python log.py basic
@@ -86,6 +109,32 @@ log5: install log.py ex5.log.yml
 	python log.py ex5.log.yml
 	ls -l test.log err.log
 
-log6: install-sample
+log6: sample
 	python sample/log_simple.py
 	ls -l test.log
+
+log-yaml1: install log1.py  ex1.log.yml
+	LOG_CONFIG=ex1.log.yml python log1.py
+	ls -l test.log
+
+log-yaml2: install log1.py  ex2.log.yml
+	LOG_CONFIG=ex2.log.yml python log1.py
+	ls -l test.log err.log
+
+log-yaml5: install log1.py  ex5.log.yml
+	LOG_CONFIG=ex5.log.yml python log1.py
+	ls -l test.log err.log
+
+list1: install list.py 
+	python list.py
+
+cli1: cli.py
+	python cli.py --help
+	python cli.py -a --list
+	python cli.py -b "do stuff" --name "john doe" --show
+
+post1: post.py post.cnf
+	python post.py
+
+wxt1: wxt.py .env
+	python wxt.py

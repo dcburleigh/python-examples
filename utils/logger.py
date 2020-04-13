@@ -8,9 +8,11 @@ from ruamel.yaml import YAML
 import json
 
 # https://stackoverflow.com/questions/9065136/allowed-characters-in-map-key-identifier-yaml#21195482
+# label for logger; also top-level root for logging label
 log_root = 'TOP'
 log_root = None
 log_root = '|'
+
 log_file = 'test.log'
 log_file = None
 
@@ -94,7 +96,13 @@ def init_logging_yaml(config_file, root_name=None):
     #print("format={}".format( cfg['formatters']['file']['format']))
 
     #print("using formatters={}".format(cfg['formatters']))
-    logging.config.dictConfig(cfg)
+    try:
+        logging.config.dictConfig(cfg)
+    except Exception as err:
+        #log.critical(f"bad config file {config_file} - {err}")
+        print(f"ERROR bad config file {config_file} - {err}")
+        exit(1)
+        #return
     return get_mod_logger()
 
 def init_logging(console_level: str='info', file_level: str='debug',

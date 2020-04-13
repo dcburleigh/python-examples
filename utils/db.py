@@ -32,11 +32,14 @@ class DB:
     errors = []
     messages = []
     table_name = None
+    current_cursor = None
 
-    def __init__(self,f=None, t=None):
+    def __init__(self,f=None, t=None, columns=[]):
 
         if t:
             self.table_name = t
+
+        self.columns = columns
 
         if f:
             self.cfg_file = f
@@ -82,7 +85,7 @@ class DB:
         vlist  = ''
         # calling program is responsible for making sure
         #  all values are of type 'string'
-        for f in self.fields:
+        for f in self.columns:
             if f in item:
                 if item[f] == None:
                     continue
@@ -112,6 +115,28 @@ class DB:
         self.close
         return id
 
+    def next_row():
+        try:
+            result = current_cursor.fetchone()
+            if not result:
+                break
+            return result
+
+        except Exception as err:
+            print( "query failed: " + str(err))
+            return
+
+    def open_query(sql):
+        global current_cursor
+
+        try:
+            current_cursor = self.dbh.cursor()
+            current_cursor.execute(sql)
+        except Exception as err:
+            #return "count failed: " + str(err)
+            print( "count failed: " + str(err))
+            return
+
     def count_column(self, col):
         """ return the number of occurrences of the values
         in a specified column"""
@@ -124,7 +149,7 @@ class DB:
         if type(col) is list:
             #print "list", col
             for c in col:
-                if not c in self.fields:
+                if not c in self.columns:
                     raise Exception("invalid column " + c)
                     return
             fields = ', '.join(col)
@@ -136,7 +161,7 @@ class DB:
 
         else:
             ###print col,"type", type(col)
-            if not col in self.fields:
+            if not col in self.columns:
                 raise Exception("invalid column " + col)
                 return
             fields = col

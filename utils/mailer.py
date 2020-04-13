@@ -3,6 +3,16 @@
 
 https://docs.python.org/3.5/library/smtplib.html
 
+usage:
+
+from common import mailer
+
+f = 'email.ini'
+mailer.init_config(f)
+
+mailer.send_simple("This is a test.",  address='test@example.com' )
+
+
 """
 from configparser import ConfigParser
 #from email.message import EmailMessage
@@ -30,7 +40,7 @@ def init_config(f_in=None):
 
 
 def send0(text, subject="Testing", address=None):
-    """Sen email, choose best method"""
+    """Send email, choose best method"""
 
     if 'use_ssl' in config['email'] and config['email']['use_ssl']:
         send_ssl(text, subject, address)
