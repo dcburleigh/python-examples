@@ -3,11 +3,12 @@
     in main:
 
 from common import log
+log = logger.get_mod_logger()
 
     in modules:
 
 from common import logger
-log = logger_get_mod_logger(__name__)
+log = logger.get_mod_logger(__name__)
 
 """
 import os

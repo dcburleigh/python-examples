@@ -1,5 +1,23 @@
 import re
 
+
+text1 = "name = 'abc' "
+
+text2 = re.sub(r'(name = )', '$1 \'xyz\'', text1)
+print(f"text1={text1} text2={text2} ")
+
+
+text2 = re.sub(r'(name = )\'.+\'', r"\1'xyz'", text1)
+print(f"text1={text1} text2={text2} ")
+
+
+text2 = re.sub(r'(name\s*=\s*)\'.+\'', r"\1'xyz'", text1)
+print(f"text1={text1} text2={text2} ")
+
+
+exit()
+
+
 pat1 = re.compile("[\']")
 
 text_in = "abc'xyz"

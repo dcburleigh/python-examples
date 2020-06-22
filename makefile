@@ -7,11 +7,11 @@ REPO = $(REPOROOT)/python-examples
 
 FILES = makefile requirements.txt
 
-CONFIGFILES = ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml email.example.ini
+CONFIGFILES = example.env ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml email.example.ini
 
 ETCFILES = deldev_db.cfg deldev_db_creds.py
 
-SCRIPTS = post.py log.py list.py log1.py mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
+SCRIPTS = args.py post.py show_config.py log.py list.py log1.py mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
 
 UTILS = logger.py
 
@@ -48,6 +48,8 @@ install-common: requirements.txt
 	pip install -r requirements.txt
 
 install: util-files $(FILES) sample
+
+update-files: $(SCRIPTS)  $(CONFIGFILES)
 
 email1: install email.ini mail.py
 	python mail.py
@@ -125,7 +127,7 @@ log-yaml5: install log1.py  ex5.log.yml
 	LOG_CONFIG=ex5.log.yml python log1.py
 	ls -l test.log err.log
 
-list1: install list.py 
+list1: install list.py
 	python list.py
 
 cli1: cli.py
