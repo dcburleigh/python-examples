@@ -1,4 +1,4 @@
-# console, file 
+# console, file, error
 version: 1
 log_root: '|'
 formatters:
@@ -6,6 +6,11 @@ formatters:
     format: '%(name)s,  %(levelname)s - %(message)s'
   file:
     format: '%(asctime)s :  %(name)s - %(levelname)s - %(message)s'
+  err:
+    # fails: TypeError: not enough arguments for format string
+    #format: '%(asctime)s : %(message)s IN %(module)s'
+    format: '%(asctime)s - %(levelname)s - %(message)s - IN %(module)s: %(filename)s #%(lineno)s '
+
 handlers:
   console:
     class: logging.StreamHandler
@@ -16,13 +21,14 @@ handlers:
     class: logging.FileHandler
     level: DEBUG
     formatter: file
-    filename: 'test.log'
-    mode: 'w'
+    filename: 'FILENAME.log'
+  err:
+    class: logging.FileHandler
+    level: WARN
+    formatter: err
+    filename: 'err.log'
 loggers:
   '|':
     level: DEBUG
-    handlers: [console,file]
+    handlers: [console,file, err]
     propagate: no
-root:
-  level: DEBUG
-  #handlers: [console,file]

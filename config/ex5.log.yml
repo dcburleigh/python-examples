@@ -1,3 +1,4 @@
+# console, file, error 
 version: 1
 log_root: '|'
 formatters:

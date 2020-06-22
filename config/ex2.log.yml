@@ -1,3 +1,4 @@
+# formatter methods 
 version: 1
 log_root: '|'
 formatters:
