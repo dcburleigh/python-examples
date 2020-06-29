@@ -1,4 +1,4 @@
-# console, file 
+# console, file
 version: 1
 log_root: '|'
 formatters:
@@ -17,7 +17,10 @@ handlers:
     level: DEBUG
     formatter: file
     filename: 'test.log'
+    # re-write file every time
     mode: 'w'
+    # append to log file every time
+    # mode: 'a'
 loggers:
   '|':
     level: DEBUG

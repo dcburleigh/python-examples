@@ -22,11 +22,13 @@ handlers:
     level: DEBUG
     formatter: file
     filename: 'FILENAME.log'
+    mode: 'w'
   err:
     class: logging.FileHandler
     level: WARN
     formatter: err
     filename: 'err.log'
+    mode: 'w'
 loggers:
   '|':
     level: DEBUG
