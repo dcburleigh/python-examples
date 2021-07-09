@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String
 from db_tables import Base
 #Base = declarative_base()
 
-class APT_Config(Base):
+class MyConfig(Base):
     __tablename__ = 'apt_config'
 
     id = Column(Integer, primary_key=True)
@@ -17,5 +17,5 @@ class APT_Config(Base):
     active = Column(Integer)
 
     def __repr__(self):
-        return "<APT_Config(config_name='%s', description='%s')>" % (
+        return "<MyConfig(config_name='%s', description='%s')>" % (
                              self.config_name, self.description)
