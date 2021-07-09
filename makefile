@@ -11,7 +11,7 @@ CONFIGFILES = example.env ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.lo
 
 ETCFILES = deldev_db.cfg deldev_db_creds.py
 
-SCRIPTS = args.py post.py show_config.py log.py list.py log1.py mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
+SCRIPTS = args.py post.py show_config.py log.py list.py log1.py log2.py  mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
 
 UTILS = logger.py
 
