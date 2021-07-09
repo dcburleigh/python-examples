@@ -133,7 +133,6 @@ def init_logging(console_level: str='info', file_level: str='debug',
     file_fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_fmt = logging.Formatter('%(asctime)s - F=%(module)s - %(name)s - %(levelname)s - %(message)s')
 
-
     if name:
         log_root = name
 
@@ -146,9 +145,9 @@ def init_logging(console_level: str='info', file_level: str='debug',
     console_log.setFormatter(console_fmt)
     logger.addHandler(console_log)
 
-    e = False
-    e = True
-    if e:
+    #e = False
+    #e = True
+    if err_file:
         if err_file:
             err_log = logging.FileHandler(err_file, mode='w')
         else:
