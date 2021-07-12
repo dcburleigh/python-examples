@@ -6,16 +6,24 @@ import sys
 #from logging.handlers import TimedRotatingFileHandler, RotatingFileHandler
 from ruamel.yaml import YAML
 import json
+from datetime import datetime
 
+logger = None
 # https://stackoverflow.com/questions/9065136/allowed-characters-in-map-key-identifier-yaml#21195482
 # label for logger; also top-level root for logging label
 log_root = 'TOP'
 log_root = None
 log_root = '|'
 
-log_file = 'test.log'
+###log_file = 'test.log'
 log_file = None
+timestamp_format = "%Y-%m-%d"
+timestamp_format = "%Y-%m-%d-%H-%M-%s"
+timestamp_format = "%Y%m%d-%H%M%s"
 
+# all attributes
+# https://docs.python.org/3/library/logging.html#logrecord-attributes
+#
 # https://opensource.com/article/17/9/python-logging
 ATTR_TO_JSON = ['created', 'filename', 'funcName', 'levelname', 'lineno', 'module', 'msecs', 'msg', 'name', 'pathname', 'process', 'processName', 'relativeCreated', 'thread', 'threadName']
 class JsonFormatter:
@@ -42,11 +50,12 @@ class MyFormatter(logging.Formatter):
         #return  "... %s - %s - %s" % (record.name, record.levelname, record.message )
         #return  "... %s - %s - %s keys=%s" % (record.name, record.levelname, record.msg, type(record))
         return  "%s - %s - %s - %s IN %s" % (self.formatTime(record), record.name, record.levelname, record.msg, record.module )
+        return f"{self.formatTime(record)} - {record.name} - {record.levelname} - {record.msg} - {record.module}"
         #return  "%s - %s - %s - %s keys=%s" % (record.asctime, record.name, record.levelname, record.msg, type(record))
         #return  "%s - %s - %s - %s IN %s: %s #%s" % (record.asctime, record.name, record.levelname, record.msg, record.funcName, record.filename, record.lineno)
 
 def get_mod_logger(mod_name=None):
-
+    """ assign a separate for each module """
     if mod_name:
         name = mod_name.split('.')[-1]
         log_name = '{}.{}'.format( log_root, name )
@@ -67,7 +76,7 @@ def init_basic(fname='basic.log'):
     fmt="%(funcName)s():%(lineno)i: %(message)s %(levelname)s"
     logging.basicConfig(level=logging.DEBUG, format=fmt, filename=fname)
     return get_mod_logger()
-    return logging.getLogger(log_root)
+    ###return logging.getLogger(log_root)
 
 def init_logging_ini(config_file, root_name=None):
     logging.config.fileConfig(config_file)
@@ -90,6 +99,16 @@ def init_logging_yaml(config_file, root_name=None):
         print("change root from {} to {} -- {}".format(log_root, root_name, cfg['loggers'][log_root]))
         cfg['loggers'][root_name] = cfg['loggers'][log_root]
         log_root = root_name.upper()
+
+    t = cfg.get('timestamped', 0)
+    print(f" t? {t} ")
+    if cfg.get('timestamped', 0):
+        f = cfg['handlers']['file']['filename']
+        ts = datetime.strftime(timestamp_format)
+        f = re.sub('.', '.' + ts, f)
+        print(f"replace {cfg['handlers']['file']['filename']} ")
+        cfg['handlers']['file']['filename'] = f
+
     if log_file:
         cfg['handlers']['file']['filename'] = log_file
 
@@ -105,8 +124,31 @@ def init_logging_yaml(config_file, root_name=None):
         #return
     return get_mod_logger()
 
+def list_root_handlers():
+    for h in logging.root.handlers[:]:
+        print(f"root: h={h}" )
+
+def list_handlers1():
+    # for h in logging.Logger.manager.loggerDict.keys()
+    for h in logging._handlerList:
+        print(f"got h={h} ")
+        if hasattr(h, 'filename'):
+            print(f"f={h.filename}")
+
+def list_handlers():
+
+    for h in logger.handlers:
+        print(f"got h={h} ")
+        if hasattr(h, 'filename'):
+            print(f"f={h.filename}")
+
 def init_logging(console_level: str='info', file_level: str='debug',
-                 fname: str='debug.log', name='|', err_file: str=None):
+                 fname: str='debug.log', name='|'
+                 , err_file: str=None
+                 , rotate_size: int=None
+                 , rotate_interval: int=None
+                 , rotate_seconds: int=None
+                 ):
     """
     Initialize logging for the package.
 
@@ -121,7 +163,7 @@ def init_logging(console_level: str='info', file_level: str='debug',
     Returns:
         Logger object
     """
-    global log_root
+    global log_root, log_file, logger
     levels = {'debug': logging.DEBUG, 'info': logging.INFO, 'warn': logging.WARN,
               'error': logging.ERROR, 'critical': logging.CRITICAL}
 
@@ -137,7 +179,7 @@ def init_logging(console_level: str='info', file_level: str='debug',
         log_root = name
 
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     #console_log = logging.StreamHandler()
     console_log = logging.StreamHandler(stream=sys.stdout)
@@ -160,9 +202,18 @@ def init_logging(console_level: str='info', file_level: str='debug',
         logger.addHandler(err_log)
 
     if fname:
-        file_log = logging.FileHandler(fname, mode='w')
+        if rotate_size:
+            file_log = logging.handlers.RotatingFileHandler(fname, maxBytes=rotate_size, backupCount=10)
+        elif rotate_seconds:
+            file_log = logging.handlers.TimedRotatingFileHandler(fname, when='s', interval=rotate_seconds)
+        elif rotate_interval:
+            file_log = logging.handlers.TimedRotatingFileHandler(fname, interval=rotate_interval)
+        else:
+            file_log = logging.FileHandler(fname, mode='a')
+
         file_log.setLevel(levels[file_level.lower()])
         file_log.setFormatter(file_fmt)
         logger.addHandler(file_log)
+        log_file = fname
 
     return logger
