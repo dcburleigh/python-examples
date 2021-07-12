@@ -1,8 +1,11 @@
-# formatter methods
-# main file, error file
-# append
+# formatter methods - defined in utils module
+# main file - write
+# error file - JSON - append
+#
 version: 1
 log_root: '|'
+log_dir: 'logs'
+timestamped: 1
 formatters:
   cons:
     format: '%(name)s,  %(levelname)s - %(message)s'
@@ -20,8 +23,9 @@ handlers:
     class: logging.FileHandler
     level: DEBUG
     formatter: file
-    filename: 'test_ex2.log'
-    mode: 'w'
+    filename: 'ex7.log'
+    mode: 'a'
+
 
   err:
     class: logging.FileHandler

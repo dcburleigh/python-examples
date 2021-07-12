@@ -1,4 +1,4 @@
-# console, file, error 
+# console, file, error
 version: 1
 log_root: '|'
 formatters:
@@ -21,7 +21,8 @@ handlers:
     class: logging.FileHandler
     level: DEBUG
     formatter: file
-    filename: 'test.log'
+    filename: 'ex5.log'
+    mode: 'a'
   err:
     class: logging.FileHandler
     level: WARN

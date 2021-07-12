@@ -1,11 +1,13 @@
 # console, file
+# file - rewrite each time
 version: 1
 log_root: '|'
 formatters:
   cons:
     format: '%(name)s,  %(levelname)s - %(message)s'
   file:
-    format: '%(asctime)s :  %(name)s - %(levelname)s - %(message)s'
+#    format: '%(asctime)s :  %(name)s - %(levelname)s - %(message)s'
+    format: '%(asctime)s :  %(name)s - %(levelname)s - %(message)s IN %(module)% '
 handlers:
   console:
     class: logging.StreamHandler
