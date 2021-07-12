@@ -1,3 +1,12 @@
+"""Logging example
+Usage:
+
+python log.py
+
+python log.py [ basic | simple | code ]
+
+
+"""
 import sys
 import re
 from utils import logger
@@ -17,6 +26,13 @@ def main():
         log = logger.init_basic(fname='simple.log')
     elif ltype == 'simple':
         log = logger.init_logging()
+    elif ltype == 'rot':
+        log = logger.init_logging(rotate_size=1000)
+    elif ltype == 'trot':
+#        log = logger.init_logging(rotate_interval=5)
+        log = logger.init_logging(rotate_seconds=30)
+
+
     elif ltype == 'code':
         log = logger.init_logging(err_file="err.log")
     elif ext == 'yml':
@@ -28,6 +44,7 @@ def main():
         return 1
 
     print("got here ")
+    log.warning("BEGINS")
     log.debug('debug ')
 
     log.info("some info")
@@ -37,6 +54,10 @@ def main():
     log.error("something bad")
 
     sample.func1()
+
+    logger.list_handlers()
+
+    print(f"wrote: {logger.log_file}")
 
     return 0
 

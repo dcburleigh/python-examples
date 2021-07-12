@@ -7,11 +7,11 @@ REPO = $(REPOROOT)/python-examples
 
 FILES = makefile requirements.txt
 
-CONFIGFILES = example.env ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml email.example.ini
+CONFIGFILES = example.env ex1.log.yml ex2.log.yml ex3.log.ini ex4.log.ini ex5.log.yml ex6.log.yml ex7.log.yml ex8.log.yml  email.example.ini
 
 ETCFILES = deldev_db.cfg deldev_db_creds.py
 
-SCRIPTS = args.py post.py show_config.py log.py list.py log1.py log2.py  mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
+SCRIPTS = args.py post.py show_config.py log.py log_basic.py  list.py log1.py log2.py  mail.py base.py regex.py db.py dbsa.py j.py jw.py file.py dt.py cli.py wxt.py
 
 UTILS = logger.py
 
@@ -83,8 +83,12 @@ f1: install file.py data
 dt1: install dt.py
 	python dt.py
 
-log-basic: install log.py
+log-basic1: install log.py
 	python log.py basic
+	ls -l basic.log
+
+log-basic: install log.py log_basic.py
+	python log_basic.py
 	ls -l basic.log
 
 log-code: install log.py
@@ -111,7 +115,14 @@ log5: install log.py ex5.log.yml
 	python log.py ex5.log.yml
 	ls -l test.log err.log
 
-log6: sample
+log-rot: install log.py
+	python log.py rot
+
+log-trot: install log.py
+	python log.py trot
+	ls -l debug.log*
+
+log-simple: sample
 	python sample/log_simple.py
 	ls -l test.log
 
@@ -121,11 +132,24 @@ log-yaml1: install log1.py  ex1.log.yml
 
 log-yaml2: install log1.py  ex2.log.yml
 	LOG_CONFIG=ex2.log.yml python log1.py
-	ls -l test.log err.log
+	ls -l test_ex2.log err.log
 
+# append mode
 log-yaml5: install log1.py  ex5.log.yml
 	LOG_CONFIG=ex5.log.yml python log1.py
-	ls -l test.log err.log
+	ls -l ex5.log err.log
+
+log-yaml6: install log1.py  ex6.log.yml
+	LOG_CONFIG=ex6.log.yml python log1.py
+	ls -l  err.log
+
+log-yaml7: install log1.py  ex7.log.yml
+	LOG_CONFIG=ex7.log.yml python log1.py
+	ls -l  err.log
+
+log-yaml8: install log1.py  ex8.log.yml
+	LOG_CONFIG=ex8.log.yml python log1.py
+	ls -l  err.log    logs/ex8*
 
 list1: install list.py
 	python list.py
