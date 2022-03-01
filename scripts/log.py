@@ -11,6 +11,7 @@ import sys
 import re
 from utils import logger
 from sample import sample
+from datetime import datetime
 
 def main():
     ltype = 'basic'
@@ -44,7 +45,7 @@ def main():
         return 1
 
     print("got here ")
-    log.warning("BEGINS")
+    log.warning(f"BEGINS {__name__} now={datetime.now()}")
     log.debug('debug ')
 
     log.info("some info")
@@ -55,11 +56,13 @@ def main():
 
     sample.func1()
 
+    print("Handlers: ")
     logger.list_handlers()
+    logger.list_root_handlers()
 
     print(f"wrote: {logger.log_file}")
 
-    return 0
+    return
 
 if __name__ == '__main__':
     #status = main()

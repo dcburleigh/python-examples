@@ -43,14 +43,21 @@ class MyFormatter(logging.Formatter):
 
     def format(self, record):
         #print("rec=" + str(dir(record))  )
-        record.asctime = self.formatTime(record)
+        #record.asctime = self.formatTime(record)
+        record.asctime = self.formatTime(record, "%Y-%m-%d-%H-%M-%S")
+
         #k = record._dict__.keys()
         # debug
         #return  "... %s - %s - %s" % (record.name, record.levelname, 'msg')
         #return  "... %s - %s - %s" % (record.name, record.levelname, record.message )
         #return  "... %s - %s - %s keys=%s" % (record.name, record.levelname, record.msg, type(record))
-        return  "%s - %s - %s - %s IN %s" % (self.formatTime(record), record.name, record.levelname, record.msg, record.module )
-        return f"{self.formatTime(record)} - {record.name} - {record.levelname} - {record.msg} - {record.module}"
+        return f"{record.asctime} - {record.name} - {record.levelname} - {record.msg} - [ {record.filename}: {record.funcName} ] "
+
+        return  "%s - %s - %s - %s IN %s [] " % ( record.asctime, record.name, record.levelname, record.msg, record.module )
+
+        return  "%s - %s - %s - %s IN %s [] " % (self.formatTime(record), record.name, record.levelname, record.msg, record.module )
+
+
         #return  "%s - %s - %s - %s keys=%s" % (record.asctime, record.name, record.levelname, record.msg, type(record))
         #return  "%s - %s - %s - %s IN %s: %s #%s" % (record.asctime, record.name, record.levelname, record.msg, record.funcName, record.filename, record.lineno)
 
@@ -70,12 +77,14 @@ def get_mod_logger(mod_name=None):
 
 def init_basic(fname='basic.log'):
     """basic logging, level = DEBUG, log file = ??? """
-    global log_root
+    global log_root, logger, log_file
 
     log_root = '|'
     fmt="%(funcName)s():%(lineno)i: %(message)s %(levelname)s"
     logging.basicConfig(level=logging.DEBUG, format=fmt, filename=fname)
-    return get_mod_logger()
+    log_file = fname
+    logger = get_mod_logger()
+    return logger
     ###return logging.getLogger(log_root)
 
 def init_logging_ini(config_file, root_name=None):
@@ -87,7 +96,7 @@ def init_logging_yaml(config_file, root_name=None):
     """initialize logging configuration via a dict specified from a YAML file """
     # https://docs.python.org/3/library/logging.config.html#logging-config-api
 
-    global log_root
+    global log_root, timestamp_format
     yaml=YAML(typ='safe')   # default, if not specfied, is 'rt' (round-trip)
     with open(config_file) as fh:
         text = fh.read()
@@ -100,13 +109,15 @@ def init_logging_yaml(config_file, root_name=None):
         cfg['loggers'][root_name] = cfg['loggers'][log_root]
         log_root = root_name.upper()
 
-    t = cfg.get('timestamped', 0)
-    print(f" t? {t} ")
+    label = None
+    timestamp_format = cfg.get('timestamp_format', timestamp_format)
+    print(f"ts format={timestamp_format}" )
+
     if cfg.get('timestamped', 0):
         f = cfg['handlers']['file']['filename']
         ts = datetime.strftime(timestamp_format)
         f = re.sub('.', '.' + ts, f)
-        print(f"replace {cfg['handlers']['file']['filename']} ")
+        #print(f"replace {cfg['handlers']['file']['filename']} ")
         cfg['handlers']['file']['filename'] = f
 
     if log_file:
@@ -127,6 +138,8 @@ def init_logging_yaml(config_file, root_name=None):
 def list_root_handlers():
     for h in logging.root.handlers[:]:
         print(f"root: h={h}" )
+        name = h.__dict__.get('baseFilename')
+        print(f"name={name}" )
 
 def list_handlers1():
     # for h in logging.Logger.manager.loggerDict.keys()
@@ -136,9 +149,17 @@ def list_handlers1():
             print(f"f={h.filename}")
 
 def list_handlers():
-
     for h in logger.handlers:
-        print(f"got h={h} ")
+        l = h.level
+        print(f"got h={h} l={l}")
+
+        for a in h.__dict__.keys():
+            print(f"   key: {a}" )
+
+        name = h._name
+        name = h.__dict__.get('baseFilename')
+        print(f"name={name}" )
+
         if hasattr(h, 'filename'):
             print(f"f={h.filename}")
 
