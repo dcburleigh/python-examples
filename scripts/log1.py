@@ -1,6 +1,9 @@
 
 import sys
 from utils import logger_yaml
+
+from sample import sample
+
 log = logger_yaml.get_mod_logger()
 
 def main():
@@ -10,10 +13,10 @@ def main():
 
     log.error("something bad ")
 
+    log.critical("failed")
     log.info("done ")
 
-    log.critical("failed")
-
+    sample.func1()
 
 if __name__ == '__main__':
     status = main()

@@ -143,10 +143,13 @@ log-yaml6: install log1.py  ex6.log.yml
 	LOG_CONFIG=ex6.log.yml python log1.py
 	ls -l  err.log
 
+# date-stampped? time-stampped
+#
 log-yaml7: install log1.py  ex7.log.yml
 	LOG_CONFIG=ex7.log.yml python log1.py
 	ls -l  err.log
 
+# timed-rotate
 log-yaml8: install log1.py  ex8.log.yml
 	LOG_CONFIG=ex8.log.yml python log1.py
 	ls -l  err.log    logs/ex8*

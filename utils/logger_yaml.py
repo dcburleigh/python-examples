@@ -52,7 +52,7 @@ def init_logging_yaml(config_file):
     """initialize logging configuration via a dict specified from a YAML file """
     # https://docs.python.org/3/library/logging.config.html#logging-config-api
 
-    global log_root, log_file, log_dir
+    global log_root, log_file, log_dir, timestamp_format
     yaml=YAML(typ='safe')   # default, if not specfied, is 'rt' (round-trip)
     with open(config_file) as fh:
         text = fh.read()
@@ -87,6 +87,10 @@ def init_logging_yaml(config_file):
     #print(f"log level={l['level']}")
 
     log_file = cfg['handlers']['file']['filename']
+    if 'timestamp_format' in cfg:
+        timestamp_format = cfg['timestamp_format']
+    #timestamp_format = cfg.get('timestamp_format', timestamp_format)
+    print(f"ts format={timestamp_format}" )
 
     t = cfg.get('timestamped', 0)
     if cfg.get('timestamped', 0):
